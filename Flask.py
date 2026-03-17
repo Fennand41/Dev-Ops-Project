@@ -376,3 +376,11 @@ def delete_goal(goal_id):
         return jsonify({"success": True})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
+
+# ✅ ІНІЦІАЛІЗАЦІЯ БАЗИ ДАНИХ
+with app.app_context():
+    db.create_all()
+
+# ✅ ЗАПУСК ДОДАТКУ
+if __name__ == "__main__":
+    app.run(debug=True)
