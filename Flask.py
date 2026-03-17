@@ -6,6 +6,7 @@ from models import db, User, Transaction, Goal, Subscription, Debt
 from datetime import datetime
 
 app = Flask(__name__)
+# Основна конфігурація додатка
 
 # 🔹 Конфігурація
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///transactions.db'
