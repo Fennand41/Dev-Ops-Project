@@ -94,3 +94,34 @@ def change_password():
     db.session.commit()
     flash("Пароль успішно змінено!", "success")
     return redirect(url_for("profile"))
+
+# ✅ ПЕРЕВІРКА ДОЗВОЛЕНИХ ФОРМАТІВ ФАЙЛІВ
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+# ✅ ЗАВАНТАЖЕННЯ АВАТАРА
+@app.route("/upload_avatar", methods=["POST"])
+@login_required
+def upload_avatar():
+    if "avatar" not in request.files:
+        flash("Файл не був завантажений", "danger")
+        return redirect(url_for("profile"))
+
+    file = request.files["avatar"]
+
+    if file.filename == "":
+        flash("Ви не обрали файл", "danger")
+        return redirect(url_for("profile"))
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(f"{current_user.username}.png")
+        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        file.save(filepath)
+
+        current_user.avatar = filename
+        db.session.commit()
+        flash("Аватар успішно оновлено!", "success")
+    else:
+        flash("Неприпустимий формат файлу. Використовуйте PNG, JPG, JPEG, GIF.", "danger")
+
+    return redirect(url_for("profile"))
