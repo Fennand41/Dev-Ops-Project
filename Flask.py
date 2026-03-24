@@ -8,14 +8,14 @@ from datetime import datetime
 app = Flask(__name__)
 # Основна конфігурація додатка
 
-# 🔹 Конфігурація
+#  Конфігурація
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///transactions.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = "static/icons/avatars"
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
-# 🔹 Ініціалізація бази даних та Flask-Login
+#  Ініціалізація бази даних та Flask-Login
 db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
@@ -24,7 +24,7 @@ login_manager.login_view = "login"
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# ✅ ГОЛОВНА СТОРІНКА
+#  ГОЛОВНА СТОРІНКА
 @app.route("/")
 def index():
     if current_user.is_authenticated:
@@ -32,7 +32,7 @@ def index():
         return render_template("index.html", transactions=transactions, user=current_user)
     return render_template("index.html", transactions=[], user=None)
 
-# ✅ РЕЄСТРАЦІЯ
+#  РЕЄСТРАЦІЯ
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -54,7 +54,7 @@ def register():
 
     return render_template("register.html")
 
-# ✅ ВХІД
+#  ВХІД
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -71,7 +71,7 @@ def login():
 
     return render_template("login.html")
 
-# ✅ ВИХІД
+#  ВИХІД
 @app.route("/logout")
 @login_required
 def logout():
@@ -79,14 +79,14 @@ def logout():
     flash("Ви вийшли з акаунту.", "info")
     return redirect(url_for("login"))
 
-# ✅ ОСОБИСТИЙ КАБІНЕТ
+#  ОСОБИСТИЙ КАБІНЕТ
 @app.route("/profile")
 @login_required
 def profile():
     avatar_url = url_for("static", filename=f"icons/avatars/{current_user.avatar}") if current_user.avatar else url_for("static", filename="icons/default.png")
     return render_template("profile.html", user=current_user, avatar_url=avatar_url)
 
-# ✅ ЗМІНА ПАРОЛЮ
+#  ЗМІНА ПАРОЛЮ
 @app.route("/change_password", methods=["POST"])
 @login_required
 def change_password():
@@ -96,7 +96,7 @@ def change_password():
     flash("Пароль успішно змінено!", "success")
     return redirect(url_for("profile"))
 
-# ✅ ДОДАВАННЯ ТРАНЗАКЦІЇ
+#  ДОДАВАННЯ ТРАНЗАКЦІЇ
 @app.route("/add_transaction", methods=["POST"])
 @login_required
 def add_transaction():
@@ -117,7 +117,7 @@ def add_transaction():
 
     return get_summary()
 
-# ✅ ОТРИМАННЯ СПИСКУ ТРАНЗАКЦІЙ
+#  ОТРИМАННЯ СПИСКУ ТРАНЗАКЦІЙ
 @app.route("/get_transactions")
 @login_required
 def get_transactions():
@@ -135,7 +135,7 @@ def get_transactions():
     ]
     return jsonify(transactions_list)
 
-# ✅ ФІНАНСОВИЙ ОГЛЯД
+#  ФІНАНСОВИЙ ОГЛЯД
 @app.route("/get_summary")
 @login_required
 def get_summary():
@@ -148,7 +148,7 @@ def get_summary():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-# ✅ ЗАВАНТАЖЕННЯ АВАТАРА
+#  ЗАВАНТАЖЕННЯ АВАТАРА
 @app.route("/upload_avatar", methods=["POST"])
 @login_required
 def upload_avatar():
@@ -176,7 +176,7 @@ def upload_avatar():
     return redirect(url_for("profile"))
 
 
-# ✅ API ДЛЯ ЦІЛЕЙ
+#  API ДЛЯ ЦІЛЕЙ
 @app.route("/api/goals", methods=["GET", "POST"])
 @login_required
 def goals_api():
@@ -227,7 +227,7 @@ def goals_api():
             return jsonify({"success": False, "error": str(e)}), 500
 
 
-# ✅ API ДЛЯ ПІДПИСОК
+#  API ДЛЯ ПІДПИСОК
 @app.route("/api/subscriptions", methods=["GET", "POST"])
 @login_required
 def subscriptions_api():
@@ -258,7 +258,7 @@ def subscriptions_api():
             return jsonify({"success": False, "error": str(e)}), 400
 
 
-# ✅ API ДЛЯ БОРГІВ
+#  API ДЛЯ БОРГІВ
 @app.route("/api/debts", methods=["GET", "POST"])
 @login_required
 def debts_api():
@@ -291,7 +291,7 @@ def debts_api():
             return jsonify({"success": False, "error": str(e)}), 400
 
 
-# ✅ API ДЛЯ ДОДАВАННЯ КОШТІВ ДО ЦІЛІ
+#  API ДЛЯ ДОДАВАННЯ КОШТІВ ДО ЦІЛІ
 @app.route("/api/goals/<int:goal_id>/add", methods=["POST"])
 @login_required
 def add_to_goal(goal_id):
@@ -325,7 +325,7 @@ def add_to_goal(goal_id):
         return jsonify({"success": False, "error": str(e)}), 400
 
 
-# ✅ API ДЛЯ ПОЗНАЧЕННЯ БОРГУ ЯК СПЛАЧЕНОГО
+#  API ДЛЯ ПОЗНАЧЕННЯ БОРГУ ЯК СПЛАЧЕНОГО
 @app.route("/api/debts/<int:debt_id>/mark_paid", methods=["POST"])
 @login_required
 def mark_debt_paid(debt_id):
@@ -344,7 +344,7 @@ def mark_debt_paid(debt_id):
         return jsonify({"success": False, "error": str(e)}), 400
 
 
-# ✅ API ДЛЯ ВИДАЛЕННЯ ПІДПИСКИ
+#  API ДЛЯ ВИДАЛЕННЯ ПІДПИСКИ
 @app.route("/api/subscriptions/<int:sub_id>", methods=["DELETE"])
 @login_required
 def delete_subscription(sub_id):
@@ -362,7 +362,7 @@ def delete_subscription(sub_id):
         return jsonify({"success": False, "error": str(e)}), 400
 
 
-# ✅ API ДЛЯ ВИДАЛЕННЯ ЦІЛІ
+#  API ДЛЯ ВИДАЛЕННЯ ЦІЛІ
 @app.route("/api/goals/<int:goal_id>", methods=["DELETE"])
 @login_required
 def delete_goal(goal_id):
@@ -378,10 +378,10 @@ def delete_goal(goal_id):
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
 
-# ✅ ІНІЦІАЛІЗАЦІЯ БАЗИ ДАНИХ
+#  ІНІЦІАЛІЗАЦІЯ БАЗИ ДАНИХ
 with app.app_context():
     db.create_all()
 
-# ✅ ЗАПУСК ДОДАТКУ
+#  ЗАПУСК ДОДАТКУ
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
