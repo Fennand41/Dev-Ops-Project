@@ -62,7 +62,7 @@ jobs:
       - name: Smoke Test
         run: |
           echo "Перевірка, чи Staging працює..."
-          python -c "assert 1 == 2, 'Smoke test failed'"  # Імітація успішного тесту
+          python -c "assert 1 == 1, 'Smoke test failed'"  # Імітація успішного тесту
 
   # ==========================================
   # STAGE 5: Deploy to Production (потребує manual approval)
