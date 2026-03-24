@@ -6,7 +6,7 @@ on:
 
 jobs:
   # ==========================================
-  # STAGE 1: Test (без деплою)
+  # STAGE 1: Test
   # ==========================================
   test:
     runs-on: ubuntu-latest
@@ -22,17 +22,44 @@ jobs:
         run: pytest test.py
 
   # ==========================================
-  # STAGE 2: Build (імітація збірки та створення артефакту)
+  # STAGE 2: Build
   # ==========================================
   build:
-    needs: test  # цей етап чекає на успішне завершення test!
+    needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Створення імітації білду (артефакту)
+      - name: Create simulated build artifact
         run: echo "Це зібрана версія мого додатку v1.0" > build_artifact.txt
-
-      - name: Завантаження артефакту в GitHub
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-build
           path: build_artifact.txt
+
+  # ==========================================
+  # STAGE 3: Deploy to Staging (імітація розгортання)
+  # ==========================================
+  deploy_staging:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-build
+      - name: Simulate Staging Deploy
+        run: |
+          echo "Розгортання на сервер Staging..."
+          cat build_artifact.txt  # Виводимо вміст артефакту як імітацію деплою
+
+  # ==========================================
+  # STAGE 4: Verify Staging (перевірка після деплою)
+  # ==========================================
+  verify_staging:
+    needs: deploy_staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Smoke Test
+        run: |
+          echo "Перевірка, чи Staging працює..."
+          python -c "assert 1 == 1, 'Smoke test failed'"  # Імітація успішного тесту
