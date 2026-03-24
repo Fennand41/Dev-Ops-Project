@@ -20,3 +20,19 @@ jobs:
         run: pip install Flask Flask-SQLAlchemy Flask-Login Flask-Bcrypt pytest
       - name: Run unit test
         run: pytest test.py
+
+  # ==========================================
+  # STAGE 2: Build (імітація збірки та створення артефакту)
+  # ==========================================
+  build:
+    needs: test  # цей етап чекає на успішне завершення test!
+    runs-on: ubuntu-latest
+    steps:
+      - name: Створення імітації білду (артефакту)
+        run: echo "Це зібрана версія мого додатку v1.0" > build_artifact.txt
+
+      - name: Завантаження артефакту в GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build
+          path: build_artifact.txt
