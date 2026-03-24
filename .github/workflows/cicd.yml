@@ -64,19 +64,19 @@ jobs:
           echo "Перевірка, чи Staging працює..."
           python -c "assert 1 == 1, 'Smoke test failed'"  # Імітація успішного тесту
 
-    # ==========================================
-    # STAGE 5: Deploy to Production (потребує manual approval)
-    # ==========================================
-    deploy_production:
-      needs: verify_staging
-      environment: production
-      runs-on: ubuntu-latest
-      steps:
-        - name: Download artifact
-          uses: actions/download-artifact@v4
-          with:
-            name: app-build
-        - name: Simulate Production Deploy
-          run: |
-            echo "🚀 ДЕПЛОЙ НА PRODUCTION УСПІШНИЙ!"
-            cat build_artifact.txt
+  # ==========================================
+  # STAGE 5: Deploy to Production (потребує manual approval)
+  # ==========================================
+  deploy_production:
+    needs: verify_staging
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-build
+      - name: Simulate Production Deploy
+        run: |
+          echo "🚀 ДЕПЛОЙ НА PRODUCTION УСПІШНИЙ!"
+          cat build_artifact.txt
