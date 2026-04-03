@@ -20,7 +20,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install Flask Flask-SQLAlchemy Flask-Login Flask-Bcrypt pytest flake8 bandit
 
+    - name: Linting (flake8)
+      run: |
+        # Запуск лінтера для перевірки синтаксису
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exit-zero
+
+    - name: Security scan (bandit)
+      run: |
+        # Запуск сканера безпеки
+        bandit -r . -ll -ii -s B101
+
     - name: Run unit test
       run: |
-        # Запуск тесту, який має впасти
+        # Запуск тесту
         pytest test.py
